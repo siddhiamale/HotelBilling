@@ -1,0 +1,1229 @@
+{% extends "base.html" %}
+
+{% block title %}
+New Order - Hotel Billing
+{% endblock %}
+
+{% block content %}
+
+<div style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+">
+
+    <div>
+        <h1>New Order</h1>
+
+        <p style="color: #6b7280;">
+            Create a new hotel order
+        </p>
+    </div>
+
+    <a href="/orders"
+       style="
+       text-decoration: none;
+       color: #374151;
+       ">
+        ← Back to Orders
+    </a>
+
+</div>
+
+
+<div style="
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+    margin-top: 25px;
+">
+
+
+    <!-- ================================================= -->
+    <!-- LEFT SIDE : MENU -->
+    <!-- ================================================= -->
+
+    <div class="card">
+
+        <h2>Menu</h2>
+
+
+        <!-- SEARCH -->
+
+        <div style="margin-top: 20px;">
+
+            <input
+                type="text"
+                id="searchDish"
+                placeholder="🔍 Search dish..."
+                onkeyup="filterDishes()"
+                style="
+                    width: 100%;
+                    padding: 12px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 6px;
+                    box-sizing: border-box;
+                "
+            >
+
+        </div>
+
+
+        <!-- CATEGORY FILTER -->
+
+        <div
+            id="categoryButtons"
+            style="
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-top: 15px;
+            "
+        >
+
+            <!-- ALL -->
+
+            <button
+                type="button"
+                class="category-btn active-category"
+                onclick="filterCategory('all', this)"
+            >
+                All
+            </button>
+
+
+            <!-- DATABASE CATEGORIES -->
+
+            {% for category in categories %}
+
+            <button
+                type="button"
+                class="category-btn"
+                data-category="{{ category.id }}"
+                onclick="filterCategory('{{ category.id }}', this)"
+            >
+                {{ category.name }}
+            </button>
+
+            {% endfor %}
+
+        </div>
+
+
+        <!-- DISH LIST -->
+
+        <div
+            id="dishList"
+            style="margin-top: 20px;"
+        >
+
+            {% for dish in dishes %}
+
+            <div
+                class="dish-card"
+
+                data-name="{{ dish.name|lower }}"
+
+                data-category="{{ dish.category_id }}"
+
+                data-id="{{ dish.id }}"
+
+                data-price="{{ dish.price }}"
+
+                style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 15px;
+                    border-bottom: 1px solid #eee;
+                "
+            >
+
+
+                <!-- DISH INFORMATION -->
+
+                <div>
+
+                    <strong style="font-size: 16px;">
+                        {{ dish.name }}
+                    </strong>
+
+                    <br>
+
+                    <small style="color: #6b7280;">
+                        {{ dish.category.name }}
+                    </small>
+
+                    <br>
+
+                    <strong>
+                        ₹{{ dish.price }}
+                    </strong>
+
+                </div>
+
+
+                <!-- ADD BUTTON -->
+
+                <button
+                    type="button"
+
+                    onclick='addDish(
+                        {{ dish.id }},
+                        {{ dish.name|tojson }},
+                        {{ dish.price }}
+                    )'
+
+                    style="
+                        background: #2563eb;
+                        color: white;
+                        border: none;
+                        padding: 9px 16px;
+                        border-radius: 6px;
+                        cursor: pointer;
+                    "
+                >
+                    + Add
+                </button>
+
+
+            </div>
+
+
+            {% else %}
+
+            <p style="
+                text-align: center;
+                color: #6b7280;
+                padding: 30px;
+            ">
+                No available dishes found.
+            </p>
+
+            {% endfor %}
+
+
+            <!-- NO SEARCH RESULT -->
+
+            <p
+                id="noSearchResult"
+                style="
+                    display: none;
+                    text-align: center;
+                    color: #6b7280;
+                    padding: 30px;
+                "
+            >
+                No dishes found.
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================================================= -->
+    <!-- RIGHT SIDE : CURRENT ORDER -->
+    <!-- ================================================= -->
+
+    <div class="card">
+
+        <h2>Current Order</h2>
+
+
+        <!-- ORDER TYPE -->
+
+        <div style="margin-top: 20px;">
+
+            <label>
+                <strong>
+                    Order Type
+                </strong>
+            </label>
+
+
+            <select
+                id="orderType"
+                name="order_type"
+
+                style="
+                    width: 100%;
+                    padding: 10px;
+                    margin-top: 8px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 6px;
+                    background: white;
+                "
+            >
+
+                <option value="Dine In">
+                    Dine In
+                </option>
+
+                <option value="Take Away">
+                    Take Away
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- CURRENT ORDER ITEMS -->
+
+        <div
+            id="currentOrder"
+            style="
+                margin-top: 25px;
+            "
+        >
+
+            <p
+                id="emptyOrder"
+                style="
+                    text-align: center;
+                    color: #6b7280;
+                "
+            >
+                No dishes added yet.
+            </p>
+
+        </div>
+
+
+
+        <!-- TOTAL SECTION -->
+
+        <div
+            style="
+                border-top: 1px solid #ddd;
+                margin-top: 20px;
+                padding-top: 20px;
+            "
+        >
+
+
+            <!-- SUBTOTAL -->
+
+            <div style="
+                display: flex;
+                justify-content: space-between;
+            ">
+
+                <span>
+                    Subtotal
+                </span>
+
+                <strong id="subtotal">
+                    ₹0.00
+                </strong>
+
+            </div>
+
+
+
+            <!-- TAX -->
+
+            <div style="
+                display: flex;
+                justify-content: space-between;
+                margin-top: 8px;
+            ">
+
+                <span>
+                    Tax (5%)
+                </span>
+
+                <strong id="tax">
+                    ₹0.00
+                </strong>
+
+            </div>
+
+
+
+            <!-- GRAND TOTAL -->
+
+            <div style="
+                display: flex;
+                justify-content: space-between;
+                margin-top: 12px;
+                font-size: 18px;
+            ">
+
+                <strong>
+                    Grand Total
+                </strong>
+
+                <strong id="grandTotal">
+                    ₹0.00
+                </strong>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- CREATE ORDER BUTTON -->
+
+        <button
+            type="button"
+            onclick="createOrder()"
+
+            style="
+                width: 100%;
+                margin-top: 20px;
+                background: #16a34a;
+                color: white;
+                border: none;
+                padding: 13px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 16px;
+            "
+        >
+
+            Create Order
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<!-- ================================================= -->
+<!-- CSS -->
+<!-- ================================================= -->
+
+<style>
+
+.category-btn {
+
+    padding: 8px 14px;
+
+    border: 1px solid #d1d5db;
+
+    background: white;
+
+    border-radius: 20px;
+
+    cursor: pointer;
+
+}
+
+
+.category-btn:hover {
+
+    background: #f3f4f6;
+
+}
+
+
+.active-category {
+
+    background: #2563eb;
+
+    color: white;
+
+    border-color: #2563eb;
+
+}
+
+
+.active-category:hover {
+
+    background: #2563eb;
+
+}
+
+
+.quantity-controls {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 8px;
+
+}
+
+
+.quantity-controls button {
+
+    width: 30px;
+
+    height: 30px;
+
+    border: none;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+
+    background: #e5e7eb;
+
+    font-size: 18px;
+
+}
+
+
+.quantity-controls button:hover {
+
+    background: #d1d5db;
+
+}
+
+
+.remove-btn {
+
+    color: #dc2626;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    margin-top: 5px;
+
+}
+
+
+.remove-btn:hover {
+
+    text-decoration: underline;
+
+}
+
+
+.dish-card {
+
+    transition: background 0.2s;
+
+}
+
+
+.dish-card:hover {
+
+    background: #f9fafb;
+
+}
+
+</style>
+
+
+
+<!-- ================================================= -->
+<!-- JAVASCRIPT -->
+<!-- ================================================= -->
+
+<script>
+
+
+/* ===================================================
+   ORDER DATA
+=================================================== */
+
+let orderItems = {};
+
+
+/* Currently selected category */
+
+let selectedCategory = "all";
+
+
+
+/* ===================================================
+   ADD DISH
+=================================================== */
+
+function addDish(id, name, price) {
+
+
+    /*
+       If dish already exists,
+       increase quantity.
+    */
+
+    if (orderItems[id]) {
+
+        orderItems[id].quantity++;
+
+    }
+
+
+    /*
+       Otherwise create new item.
+    */
+
+    else {
+
+        orderItems[id] = {
+
+            name: name,
+
+            price: parseFloat(price),
+
+            quantity: 1
+
+        };
+
+    }
+
+
+    renderOrder();
+
+}
+
+
+
+/* ===================================================
+   CHANGE QUANTITY
+=================================================== */
+
+function changeQuantity(id, change) {
+
+
+    if (!orderItems[id]) {
+
+        return;
+
+    }
+
+
+    orderItems[id].quantity += change;
+
+
+    /*
+       If quantity reaches zero,
+       remove the item.
+    */
+
+    if (orderItems[id].quantity <= 0) {
+
+        delete orderItems[id];
+
+    }
+
+
+    renderOrder();
+
+}
+
+
+
+/* ===================================================
+   REMOVE DISH
+=================================================== */
+
+function removeDish(id) {
+
+
+    delete orderItems[id];
+
+
+    renderOrder();
+
+}
+
+
+
+/* ===================================================
+   DISPLAY CURRENT ORDER
+=================================================== */
+
+function renderOrder() {
+
+
+    const container =
+        document.getElementById(
+            "currentOrder"
+        );
+
+
+    container.innerHTML = "";
+
+
+    const items =
+        Object.keys(orderItems);
+
+
+    /*
+       No items
+    */
+
+    if (items.length === 0) {
+
+
+        container.innerHTML = `
+
+            <p style="
+                text-align: center;
+                color: #6b7280;
+            ">
+
+                No dishes added yet.
+
+            </p>
+
+        `;
+
+
+        updateTotals();
+
+
+        return;
+
+    }
+
+
+
+    /*
+       Display every selected dish
+    */
+
+    items.forEach(function(id) {
+
+
+        const item =
+            orderItems[id];
+
+
+        const amount =
+            item.price * item.quantity;
+
+
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        div.style.borderBottom =
+            "1px solid #eee";
+
+
+        div.style.padding =
+            "12px 0";
+
+
+
+        div.innerHTML = `
+
+            <strong>
+                ${item.name}
+            </strong>
+
+            <br>
+
+            <small style="color: #6b7280;">
+                ₹${item.price.toFixed(2)}
+                each
+            </small>
+
+
+            <div class="quantity-controls">
+
+
+                <button
+                    type="button"
+                    onclick="changeQuantity(
+                        ${id},
+                        -1
+                    )"
+                >
+                    −
+                </button>
+
+
+                <strong>
+                    ${item.quantity}
+                </strong>
+
+
+                <button
+                    type="button"
+                    onclick="changeQuantity(
+                        ${id},
+                        1
+                    )"
+                >
+                    +
+                </button>
+
+
+            </div>
+
+
+            <div style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 6px;
+            ">
+
+
+                <strong>
+                    ₹${amount.toFixed(2)}
+                </strong>
+
+
+                <span
+                    class="remove-btn"
+                    onclick="removeDish(${id})"
+                >
+                    Remove
+                </span>
+
+
+            </div>
+
+        `;
+
+
+        container.appendChild(div);
+
+
+    });
+
+
+    updateTotals();
+
+}
+
+
+
+/* ===================================================
+   CALCULATE TOTALS
+=================================================== */
+
+function updateTotals() {
+
+
+    let subtotal = 0;
+
+
+    /*
+       Add all item amounts
+    */
+
+    Object.values(orderItems)
+        .forEach(function(item) {
+
+
+            subtotal +=
+                item.price *
+                item.quantity;
+
+        });
+
+
+
+    /*
+       Tax = 5%
+    */
+
+    const tax =
+        subtotal * 0.05;
+
+
+
+    /*
+       Grand total
+    */
+
+    const grandTotal =
+        subtotal + tax;
+
+
+
+    /*
+       Display subtotal
+    */
+
+    document.getElementById(
+        "subtotal"
+    ).innerText =
+        "₹" +
+        subtotal.toFixed(2);
+
+
+
+    /*
+       Display tax
+    */
+
+    document.getElementById(
+        "tax"
+    ).innerText =
+        "₹" +
+        tax.toFixed(2);
+
+
+
+    /*
+       Display grand total
+    */
+
+    document.getElementById(
+        "grandTotal"
+    ).innerText =
+        "₹" +
+        grandTotal.toFixed(2);
+
+}
+
+
+
+/* ===================================================
+   SEARCH DISH
+=================================================== */
+
+function filterDishes() {
+
+
+    const search =
+        document
+        .getElementById(
+            "searchDish"
+        )
+        .value
+        .toLowerCase()
+        .trim();
+
+
+
+    const dishCards =
+        document.querySelectorAll(
+            ".dish-card"
+        );
+
+
+    let visibleCount = 0;
+
+
+
+    dishCards.forEach(
+        function(card) {
+
+
+            const name =
+                card.dataset.name;
+
+
+            const category =
+                card.dataset.category;
+
+
+
+            /*
+               Search condition
+            */
+
+            const matchesSearch =
+                name.includes(search);
+
+
+
+            /*
+               Category condition
+            */
+
+            const matchesCategory =
+                selectedCategory === "all"
+                ||
+                category === selectedCategory;
+
+
+
+            /*
+               Show / hide
+            */
+
+            if (
+                matchesSearch
+                &&
+                matchesCategory
+            ) {
+
+
+                card.style.display =
+                    "flex";
+
+
+                visibleCount++;
+
+
+            }
+
+
+            else {
+
+
+                card.style.display =
+                    "none";
+
+
+            }
+
+        }
+    );
+
+
+
+    /*
+       Show message if nothing found
+    */
+
+    const noResult =
+        document.getElementById(
+            "noSearchResult"
+        );
+
+
+    if (visibleCount === 0) {
+
+        noResult.style.display =
+            "block";
+
+    }
+
+    else {
+
+        noResult.style.display =
+            "none";
+
+    }
+
+}
+
+
+
+/* ===================================================
+   CATEGORY FILTER
+=================================================== */
+
+function filterCategory(
+    category,
+    button
+) {
+
+
+    selectedCategory =
+        category;
+
+
+
+    /*
+       Remove active class
+       from all buttons
+    */
+
+    document
+        .querySelectorAll(
+            ".category-btn"
+        )
+        .forEach(
+            function(btn) {
+
+                btn.classList.remove(
+                    "active-category"
+                );
+
+            }
+        );
+
+
+
+    /*
+       Activate clicked button
+    */
+
+    button.classList.add(
+        "active-category"
+    );
+
+
+
+    /*
+       Apply filter
+    */
+
+    filterDishes();
+
+}
+
+
+
+/* ===================================================
+   CREATE ORDER
+=================================================== */
+
+function createOrder() {
+
+
+    const items =
+        Object.keys(orderItems);
+
+
+
+    /*
+       Don't allow empty order
+    */
+
+    if (items.length === 0) {
+
+
+        alert(
+            "Please add at least one dish."
+        );
+
+
+        return;
+
+    }
+
+
+
+    /*
+       Get order type
+    */
+
+    const orderType =
+        document.getElementById(
+            "orderType"
+        ).value;
+
+
+
+    /*
+       Create array
+       for Flask
+    */
+
+    const orderItemsArray = [];
+
+
+
+    items.forEach(
+        function(id) {
+
+
+            orderItemsArray.push({
+
+                id: parseInt(id),
+
+                quantity:
+                    orderItems[id].quantity
+
+            });
+
+        }
+    );
+
+
+
+    /*
+       Create hidden form
+    */
+
+    const form =
+        document.createElement(
+            "form"
+        );
+
+
+    form.method = "POST";
+
+
+    form.action =
+        "/orders/new";
+
+
+
+    /*
+       Order Type
+    */
+
+    const orderTypeInput =
+        document.createElement(
+            "input"
+        );
+
+
+    orderTypeInput.type =
+        "hidden";
+
+
+    orderTypeInput.name =
+        "order_type";
+
+
+    orderTypeInput.value =
+        orderType;
+
+
+    form.appendChild(
+        orderTypeInput
+    );
+
+
+
+    /*
+       Order Data
+    */
+
+    const orderDataInput =
+        document.createElement(
+            "input"
+        );
+
+
+    orderDataInput.type =
+        "hidden";
+
+
+    orderDataInput.name =
+        "order_data";
+
+
+    orderDataInput.value =
+        JSON.stringify(
+            orderItemsArray
+        );
+
+
+    form.appendChild(
+        orderDataInput
+    );
+
+
+
+    /*
+       Add form to page
+    */
+
+    document.body.appendChild(
+        form
+    );
+
+
+
+    /*
+       Submit to Flask
+    */
+
+    form.submit();
+
+}
+
+
+</script>
+
+{% endblock %}

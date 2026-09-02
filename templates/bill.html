@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Bill #{{ order.id }} - Hotel Billing
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            padding: 30px;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f3f4f6;
+
+            color: #111827;
+
+        }
+
+
+        /* =========================================
+           MAIN BILL CONTAINER
+        ========================================= */
+
+        .bill-page {
+
+            max-width: 850px;
+
+            margin: auto;
+
+        }
+
+
+        /* =========================================
+           ACTION BUTTONS
+        ========================================= */
+
+        .bill-actions {
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items: center;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .back-btn {
+
+            text-decoration: none;
+
+            color: #374151;
+
+            font-size: 14px;
+
+        }
+
+
+        .print-btn {
+
+            border: none;
+
+            background: #2563eb;
+
+            color: white;
+
+            padding:
+                10px 18px;
+
+            border-radius: 6px;
+
+            font-size: 14px;
+
+            cursor: pointer;
+
+        }
+
+
+        .print-btn:hover {
+
+            background: #1d4ed8;
+
+        }
+
+
+        /* =========================================
+           BILL
+        ========================================= */
+
+        .bill {
+
+            background: white;
+
+            padding: 40px;
+
+            border-radius: 8px;
+
+            box-shadow:
+                0 2px 12px
+                rgba(0, 0, 0, 0.08);
+
+        }
+
+
+        /* =========================================
+           HOTEL HEADER
+        ========================================= */
+
+        .hotel-header {
+
+            text-align: center;
+
+        }
+
+
+        .hotel-header h1 {
+
+            margin: 0;
+
+            font-size: 30px;
+
+            letter-spacing: 1px;
+
+        }
+
+
+        .hotel-header .subtitle {
+
+            margin-top: 6px;
+
+            color: #6b7280;
+
+            font-size: 14px;
+
+        }
+
+
+        .hotel-contact {
+
+            margin-top: 5px;
+
+            color: #6b7280;
+
+            font-size: 13px;
+
+        }
+
+
+        /* =========================================
+           DIVIDER
+        ========================================= */
+
+        .divider {
+
+            border: none;
+
+            border-top:
+                1px solid #d1d5db;
+
+            margin:
+                25px 0;
+
+        }
+
+
+        /* =========================================
+           ORDER INFORMATION
+        ========================================= */
+
+        .order-info {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 12px 30px;
+
+            font-size: 14px;
+
+        }
+
+
+        .info-row {
+
+            display: flex;
+
+            gap: 5px;
+
+        }
+
+
+        .info-label {
+
+            font-weight: bold;
+
+        }
+
+
+        /* =========================================
+           ORDER DETAILS
+        ========================================= */
+
+        .section-title {
+
+            font-size: 18px;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        table {
+
+            width: 100%;
+
+            border-collapse:
+                collapse;
+
+        }
+
+
+        thead {
+
+            background: #f3f4f6;
+
+        }
+
+
+        th {
+
+            text-align: left;
+
+            padding: 12px 10px;
+
+            font-size: 13px;
+
+            border-bottom:
+                2px solid #d1d5db;
+
+        }
+
+
+        td {
+
+            padding: 12px 10px;
+
+            font-size: 14px;
+
+            border-bottom:
+                1px solid #e5e7eb;
+
+        }
+
+
+        /* RIGHT ALIGNMENT */
+
+        th:nth-child(3),
+        th:nth-child(4),
+        th:nth-child(5),
+
+        td:nth-child(3),
+        td:nth-child(4),
+        td:nth-child(5) {
+
+            text-align: right;
+
+        }
+
+
+        /* =========================================
+           TOTALS
+        ========================================= */
+
+        .totals {
+
+            width: 350px;
+
+            max-width: 100%;
+
+            margin-left: auto;
+
+            margin-top: 25px;
+
+        }
+
+
+        .total-row {
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            padding: 7px 0;
+
+            font-size: 14px;
+
+        }
+
+
+        .grand-total {
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            padding-top: 12px;
+
+            margin-top: 8px;
+
+            border-top:
+                2px solid #111827;
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+        }
+
+
+        /* =========================================
+           PAYMENT INFORMATION
+        ========================================= */
+
+        .payment-info {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 15px;
+
+            font-size: 14px;
+
+        }
+
+
+        .payment-status {
+
+            font-weight: bold;
+
+        }
+
+
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        .bill-footer {
+
+            text-align: center;
+
+            margin-top: 35px;
+
+            color: #6b7280;
+
+            font-size: 14px;
+
+        }
+
+
+        .bill-footer p {
+
+            margin: 5px 0;
+
+        }
+
+
+        /* =========================================
+           MOBILE
+        ========================================= */
+
+        @media (max-width: 700px) {
+
+
+            body {
+
+                padding: 10px;
+
+            }
+
+
+            .bill {
+
+                padding: 20px;
+
+            }
+
+
+            .order-info {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .payment-info {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .totals {
+
+                width: 100%;
+
+            }
+
+
+            table {
+
+                font-size: 12px;
+
+            }
+
+
+            th,
+            td {
+
+                padding:
+                    8px 5px;
+
+            }
+
+        }
+
+
+        /* =========================================
+           PRINT
+        ========================================= */
+
+        @media print {
+
+
+            @page {
+
+                size: A4;
+
+                margin: 12mm;
+
+            }
+
+
+            body {
+
+                background: white;
+
+                padding: 0;
+
+                margin: 0;
+
+            }
+
+
+            .bill-page {
+
+                max-width: none;
+
+                width: 100%;
+
+            }
+
+
+            /*
+               Hide navigation/buttons
+            */
+
+            .bill-actions {
+
+                display: none !important;
+
+            }
+
+
+            .bill {
+
+                box-shadow: none;
+
+                border-radius: 0;
+
+                padding: 0;
+
+            }
+
+
+            /*
+               Prevent unnecessary
+               page background
+            */
+
+            * {
+
+                -webkit-print-color-adjust:
+                    exact;
+
+                print-color-adjust:
+                    exact;
+
+            }
+
+
+            /*
+               Keep table header
+               visible when page breaks
+            */
+
+            thead {
+
+                display: table-header-group;
+
+            }
+
+
+            tr {
+
+                page-break-inside:
+                    avoid;
+
+            }
+
+
+            /*
+               Make sure footer
+               doesn't get separated
+            */
+
+            .bill-footer {
+
+                page-break-inside:
+                    avoid;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="bill-page">
+
+
+    <!-- =========================================
+         ACTION BUTTONS
+    ========================================== -->
+
+    <div class="bill-actions">
+
+
+        <a
+            href="/orders"
+            class="back-btn"
+        >
+
+            ← Back to Orders
+
+        </a>
+
+
+        <button
+            type="button"
+            class="print-btn"
+            onclick="window.print()"
+        >
+
+            🖨️ Print Bill
+
+        </button>
+
+
+    </div>
+
+
+
+    <!-- =========================================
+         BILL
+    ========================================== -->
+
+    <div class="bill">
+
+
+        <!-- =====================================
+             HOTEL HEADER
+        ====================================== -->
+
+        <div class="hotel-header">
+
+
+            <h1>
+                HOTEL BILL
+            </h1>
+
+
+            <div class="subtitle">
+
+                Thank you for dining with us
+
+            </div>
+
+
+            <div class="hotel-contact">
+
+                Hotel Management System
+
+            </div>
+
+
+        </div>
+
+
+
+        <hr class="divider">
+
+
+
+        <!-- =====================================
+             ORDER INFORMATION
+        ====================================== -->
+
+        <div class="order-info">
+
+
+            <div class="info-row">
+
+                <span class="info-label">
+                    Order ID:
+                </span>
+
+                <span>
+                    #{{ order.id }}
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <span class="info-label">
+                    Order Type:
+                </span>
+
+                <span>
+                    {{ order.order_type }}
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <span class="info-label">
+                    Date:
+                </span>
+
+                <span>
+
+                    {{ order.created_at.strftime('%d-%m-%Y') }}
+
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <span class="info-label">
+                    Time:
+                </span>
+
+                <span>
+
+                    {{ order.created_at.strftime('%I:%M %p') }}
+
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+
+        <hr class="divider">
+
+
+
+        <!-- =====================================
+             ORDER DETAILS
+        ====================================== -->
+
+        <div>
+
+
+            <h2 class="section-title">
+                Order Details
+            </h2>
+
+
+            <table>
+
+
+                <thead>
+
+                    <tr>
+
+
+                        <th>
+                            Item
+                        </th>
+
+
+                        <th>
+                            Category
+                        </th>
+
+
+                        <th>
+                            Qty
+                        </th>
+
+
+                        <th>
+                            Price
+                        </th>
+
+
+                        <th>
+                            Amount
+                        </th>
+
+
+                    </tr>
+
+                </thead>
+
+
+
+                <tbody>
+
+
+                    {% for item in order.items %}
+
+
+                    <tr>
+
+
+                        <td>
+
+                            {{ item.dish.name }}
+
+                        </td>
+
+
+                        <td>
+
+                            {{ item.dish.category.name }}
+
+                        </td>
+
+
+                        <td>
+
+                            {{ item.quantity }}
+
+                        </td>
+
+
+                        <td>
+
+                            ₹{{ "%.2f"|format(item.price) }}
+
+                        </td>
+
+
+                        <td>
+
+                            ₹{{ "%.2f"|format(item.amount) }}
+
+                        </td>
+
+
+                    </tr>
+
+
+                    {% else %}
+
+
+                    <tr>
+
+
+                        <td
+                            colspan="5"
+                            style="
+                                text-align: center;
+                                color: #6b7280;
+                            "
+                        >
+
+                            No items found.
+
+                        </td>
+
+
+                    </tr>
+
+
+                    {% endfor %}
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+
+        <!-- =====================================
+             TOTALS
+        ====================================== -->
+
+        <div class="totals">
+
+
+            <div class="total-row">
+
+
+                <span>
+                    Subtotal
+                </span>
+
+
+                <strong>
+
+                    ₹{{ "%.2f"|format(order.subtotal) }}
+
+                </strong>
+
+
+            </div>
+
+
+
+            <div class="total-row">
+
+
+                <span>
+                    Tax
+                </span>
+
+
+                <strong>
+
+                    ₹{{ "%.2f"|format(order.tax) }}
+
+                </strong>
+
+
+            </div>
+
+
+
+            {% if order.discount and order.discount > 0 %}
+
+
+            <div class="total-row">
+
+
+                <span>
+                    Discount
+                </span>
+
+
+                <strong>
+
+                    - ₹{{ "%.2f"|format(order.discount) }}
+
+                </strong>
+
+
+            </div>
+
+
+            {% endif %}
+
+
+
+            <div class="grand-total">
+
+
+                <span>
+                    Grand Total
+                </span>
+
+
+                <span>
+
+                    ₹{{ "%.2f"|format(order.grand_total) }}
+
+                </span>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <hr class="divider">
+
+       {% if order.payment_status != "Paid" %}
+
+<div style="
+    text-align: right;
+    margin-bottom: 20px;
+">
+
+    <a
+        href="/orders/{{ order.id }}/payment"
+        style="
+            display: inline-block;
+            background: #16a34a;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+        "
+    >
+
+        💳 Make Payment
+
+    </a>
+
+</div>
+
+{% endif %}
+
+
+
+
+        <!-- =====================================
+             PAYMENT INFORMATION
+        ====================================== -->
+
+        <div class="payment-info">
+
+
+            <div>
+
+
+                <strong>
+                    Payment Method:
+                </strong>
+
+
+                {{ order.payment_method or "Pending" }}
+
+
+            </div>
+
+
+
+            <div>
+
+
+                <strong>
+                    Payment Status:
+                </strong>
+
+
+                <span class="payment-status">
+
+                    {{ order.payment_status }}
+
+                </span>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =====================================
+             FOOTER
+        ====================================== -->
+
+        <div class="bill-footer">
+
+
+            <p>
+                Thank you for visiting!
+            </p>
+
+
+            <p>
+                Please visit again.
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+</body>
+
+</html>

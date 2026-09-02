@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dishes - Hotel Billing
+{% endblock %}
+
+{% block content %}
+
+<div style="display: flex; justify-content: space-between; align-items: center;">
+
+    <div>
+        <h1>Dishes</h1>
+        <p>Manage your hotel menu items</p>
+    </div>
+
+    <a href="/dishes/add"
+       style="
+       background: #2563eb;
+       color: white;
+       padding: 10px 18px;
+       border-radius: 6px;
+       text-decoration: none;
+       ">
+        + Add Dish
+    </a>
+
+</div>
+
+
+<div class="card" style="margin-top: 25px;">
+
+    <table style="width: 100%; border-collapse: collapse;">
+
+        <thead>
+
+            <tr style="text-align: left; border-bottom: 1px solid #ddd;">
+
+                <th style="padding: 12px;">
+                    ID
+                </th>
+
+                <th style="padding: 12px;">
+                    Dish Name
+                </th>
+
+                <th style="padding: 12px;">
+                    Category
+                </th>
+
+                <th style="padding: 12px;">
+                    Price
+                </th>
+
+                <th style="padding: 12px;">
+                    Status
+                </th>
+
+                <th style="padding: 12px;">
+                    Actions
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            {% for dish in dishes %}
+
+            <tr style="border-bottom: 1px solid #eee;">
+
+                <!-- ID -->
+
+                <td style="padding: 12px;">
+                    {{ dish.id }}
+                </td>
+
+
+                <!-- Dish Name -->
+
+                <td style="padding: 12px;">
+                    {{ dish.name }}
+                </td>
+
+
+                <!-- Category -->
+
+                <td style="padding: 12px;">
+                    {{ dish.category.name }}
+                </td>
+
+
+                <!-- Price -->
+
+                <td style="padding: 12px;">
+                    ₹{{ dish.price }}
+                </td>
+
+
+                <!-- Status -->
+
+                <td style="padding: 12px;">
+
+                    {% if dish.available %}
+
+                        <span style="color: green;">
+                            Available
+                        </span>
+
+                    {% else %}
+
+                        <span style="color: red;">
+                            Inactive
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+
+                <!-- Actions -->
+
+                <td style="padding: 12px;">
+
+                    <a href="/dishes/edit/{{ dish.id }}">
+                        Edit
+                    </a>
+
+                    &nbsp; | &nbsp;
+
+
+                    {% if dish.available %}
+
+                        <a href="/dishes/deactivate/{{ dish.id }}"
+                           onclick="return confirm('Deactivate this dish?');">
+                            Deactivate
+                        </a>
+
+                    {% else %}
+
+                        <a href="/dishes/activate/{{ dish.id }}"
+                           onclick="return confirm('Activate this dish?');">
+                            Activate
+                        </a>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+
+            {% else %}
+
+            <!-- No dishes -->
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    style="
+                        padding: 25px;
+                        text-align: center;
+                        color: #6b7280;
+                    "
+                >
+
+                    No dishes found.
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

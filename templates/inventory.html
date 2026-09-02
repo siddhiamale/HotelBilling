@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+
+{% block title %}
+Inventory - Hotel Billing
+{% endblock %}
+
+{% block content %}
+
+<div style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+">
+
+    <div>
+        <h1>Inventory</h1>
+
+        <p style="color: #6b7280;">
+            Manage hotel stock and ingredients
+        </p>
+    </div>
+
+    <a href="/inventory/add"
+       style="
+       background: #2563eb;
+       color: white;
+       padding: 10px 18px;
+       border-radius: 6px;
+       text-decoration: none;
+       ">
+        + Add Stock Item
+    </a>
+
+</div>
+
+
+<!-- LOW STOCK -->
+
+<form
+    method="GET"
+    action="/inventory"
+    style="
+        display: flex;
+        gap: 10px;
+        margin-top: 25px;
+        margin-bottom: 20px;
+    "
+>
+
+    <input
+        type="text"
+        name="search"
+        value="{{ search }}"
+        placeholder="Search inventory item..."
+        style="
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+        "
+    >
+
+    <button
+        type="submit"
+        style="
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        "
+    >
+        Search
+    </button>
+
+    {% if search %}
+
+    <a
+        href="/inventory"
+        style="
+            background: #e5e7eb;
+            color: #111827;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+        "
+    >
+        Clear
+    </a>
+
+    {% endif %}
+
+</form>
+
+
+<div class="card"
+     style="
+     margin-top: 25px;
+     padding: 15px;
+     background: #fff7ed;
+     border: 1px solid #fed7aa;
+     ">
+
+    <strong>
+        ⚠️ Low Stock:
+    </strong>
+
+    {{ low_stock_count }} item(s) need attention.
+
+</div>
+
+
+<!-- INVENTORY TABLE -->
+
+<div class="card"
+     style="
+     margin-top: 25px;
+     overflow-x: auto;
+     ">
+
+    <table style="
+        width: 100%;
+        border-collapse: collapse;
+        ">
+
+        <thead>
+
+            <tr style="
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+                ">
+
+                <th style="padding: 12px;">
+                    ID
+                </th>
+
+                <th style="padding: 12px;">
+                    Item
+                </th>
+
+                <th style="padding: 12px;">
+                    Unit
+                </th>
+
+                <th style="padding: 12px;">
+                    Current Stock
+                </th>
+
+                <th style="padding: 12px;">
+                    Reorder Level
+                </th>
+
+                <th style="padding: 12px;">
+                    Status
+                </th>
+
+                <th style="padding: 12px;">
+                    Actions
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            {% for item in inventory %}
+
+            <tr style="
+                border-bottom: 1px solid #eee;
+                ">
+
+                <td style="padding: 12px;">
+                    {{ item.id }}
+                </td>
+
+                <td style="
+                    padding: 12px;
+                    font-weight: bold;
+                    ">
+                    {{ item.name }}
+                </td>
+
+                <td style="padding: 12px;">
+                    {{ item.unit }}
+                </td>
+
+                <td style="padding: 12px;">
+                    {{ item.current_stock }}
+                </td>
+
+                <td style="padding: 12px;">
+                    {{ item.reorder_level }}
+                </td>
+
+                <td style="padding: 12px;">
+
+                    {% if item.current_stock <= item.reorder_level %}
+
+                        <span style="
+                            color: #dc2626;
+                            font-weight: bold;
+                            ">
+                            Low Stock
+                        </span>
+
+                    {% else %}
+
+                        <span style="
+                            color: #16a34a;
+                            font-weight: bold;
+                            ">
+                            In Stock
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+
+                <td style="padding: 12px;">
+
+    <a href="/inventory/edit/{{ item.id }}">
+        Edit
+    </a>
+
+    &nbsp; | &nbsp;
+
+    <a href="/inventory/stock-in/{{ item.id }}">
+        Stock In
+    </a>
+
+    &nbsp; | &nbsp;
+
+    <a href="/inventory/stock-out/{{ item.id }}">
+        Stock Out
+    </a>
+
+    &nbsp; | &nbsp;
+
+    {% if item.is_active %}
+
+        <a href="/inventory/deactivate/{{ item.id }}"
+           onclick="return confirm('Deactivate this stock item?');">
+            Deactivate
+        </a>
+
+    {% else %}
+
+        <a href="/inventory/activate/{{ item.id }}">
+            Activate
+        </a>
+
+    {% endif %}
+
+</td>
+
+            </tr>
+
+
+            {% else %}
+
+            <tr>
+
+                <td colspan="7"
+                    style="
+                    padding: 30px;
+                    text-align: center;
+                    color: #6b7280;
+                    ">
+
+                    No inventory items found.
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

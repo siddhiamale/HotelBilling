@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}
+Orders - Hotel Billing
+{% endblock %}
+
+{% block content %}
+
+<div style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+">
+
+    <div>
+        <h1>Orders</h1>
+        <p style="color: #6b7280;">
+            View and manage hotel orders
+        </p>
+    </div>
+
+    <a href="/orders/new"
+       style="
+       background: #2563eb;
+       color: white;
+       padding: 10px 18px;
+       border-radius: 6px;
+       text-decoration: none;
+       ">
+        + New Order
+    </a>
+
+</div>
+
+
+<div class="card" style="margin-top: 25px;">
+
+    <table style="
+        width: 100%;
+        border-collapse: collapse;
+    ">
+
+        <thead>
+
+            <tr style="
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            ">
+
+                <th style="padding: 12px;">
+                    Order ID
+                </th>
+
+                <th style="padding: 12px;">
+                    Date
+                </th>
+
+                <th style="padding: 12px;">
+                    Order Type
+                </th>
+
+                <th style="padding: 12px;">
+                    Total
+                </th>
+
+                <th style="padding: 12px;">
+                    Payment
+                </th>
+
+                <th style="padding: 12px;">
+                    Action
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            {% for order in orders %}
+
+            <tr style="
+                border-bottom: 1px solid #eee;
+            ">
+
+                <td style="padding: 12px;">
+                    #{{ order.id }}
+                </td>
+
+                <td style="padding: 12px;">
+
+                    {{ order.created_at.strftime('%d-%m-%Y %I:%M %p') }}
+
+                </td>
+
+                <td style="padding: 12px;">
+                    {{ order.order_type }}
+                </td>
+
+                <td style="padding: 12px;">
+                    ₹{{ "%.2f"|format(order.grand_total) }}
+                </td>
+
+                <td style="padding: 12px;">
+                    {{ order.payment_status }}
+                </td>
+
+                <td style="padding: 12px;">
+
+                    <a href="/orders/{{ order.id }}/bill">
+    View Bill
+</a>
+
+&nbsp; | &nbsp;
+
+{% if order.payment_status != "Paid" %}
+
+<a href="/orders/{{ order.id }}/payment">
+    Pay
+</a>
+
+{% else %}
+
+<span style="color: green;">
+    ✓ Paid
+</span>
+
+{% endif %}
+
+                </td>
+
+            </tr>
+
+            {% else %}
+
+            <tr>
+
+                <td colspan="6"
+                    style="
+                    padding: 30px;
+                    text-align: center;
+                    color: #6b7280;
+                    ">
+
+                    No orders found.
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

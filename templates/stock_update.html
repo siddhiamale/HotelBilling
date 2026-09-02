@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}
+Update Stock - Hotel Billing
+{% endblock %}
+
+{% block content %}
+
+<div style="max-width: 600px;">
+
+    <h1>{{ action }} Stock</h1>
+
+    <p style="color: #6b7280;">
+        {{ item.name }} — Current stock:
+        <strong>
+            {{ item.current_stock }} {{ item.unit }}
+        </strong>
+    </p>
+
+    <div class="card" style="margin-top: 25px;">
+
+        <form method="POST">
+
+            <div style="margin-bottom: 20px;">
+
+                <label>
+                    Quantity
+                </label>
+
+                <input
+                    type="number"
+                    name="quantity"
+                    min="0.01"
+                    step="0.01"
+                    required
+                    placeholder="Enter quantity"
+                    style="
+                        width: 100%;
+                        padding: 10px;
+                        margin-top: 6px;
+                        border: 1px solid #d1d5db;
+                        border-radius: 6px;
+                        box-sizing: border-box;
+                    "
+                >
+
+            </div>
+
+
+            <div style="
+                display: flex;
+                gap: 10px;
+            ">
+
+                <button
+                    type="submit"
+                    style="
+                        background: #2563eb;
+                        color: white;
+                        border: none;
+                        padding: 10px 18px;
+                        border-radius: 6px;
+                        cursor: pointer;
+                    "
+                >
+                    Update Stock
+                </button>
+
+
+                <a
+                    href="/inventory"
+                    style="
+                        background: #e5e7eb;
+                        color: #111827;
+                        padding: 10px 18px;
+                        border-radius: 6px;
+                        text-decoration: none;
+                    "
+                >
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

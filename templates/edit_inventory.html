@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Stock Item - Hotel Billing
+{% endblock %}
+
+{% block content %}
+
+<div style="max-width: 650px;">
+
+    <h1>Edit Stock Item</h1>
+
+    <p style="color: #6b7280;">
+        Update inventory information
+    </p>
+
+    <div class="card" style="margin-top: 25px;">
+
+        <form method="POST">
+
+            <!-- ITEM NAME -->
+
+            <div style="margin-bottom: 18px;">
+
+                <label>
+                    Item Name
+                </label>
+
+                <input
+                    type="text"
+                    name="name"
+                    value="{{ item.name }}"
+                    required
+                    style="
+                        width: 100%;
+                        padding: 10px;
+                        margin-top: 6px;
+                        border: 1px solid #d1d5db;
+                        border-radius: 6px;
+                        box-sizing: border-box;
+                    "
+                >
+
+            </div>
+
+
+            <!-- UNIT -->
+
+            <div style="margin-bottom: 18px;">
+
+                <label>
+                    Unit
+                </label>
+
+                <select
+                    name="unit"
+                    required
+                    style="
+                        width: 100%;
+                        padding: 10px;
+                        margin-top: 6px;
+                        border: 1px solid #d1d5db;
+                        border-radius: 6px;
+                    "
+                >
+
+                    {% for unit in [
+                        "kg",
+                        "gram",
+                        "litre",
+                        "ml",
+                        "piece",
+                        "packet",
+                        "bottle",
+                        "box"
+                    ] %}
+
+                        <option
+                            value="{{ unit }}"
+                            {% if item.unit == unit %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ unit }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- CURRENT STOCK -->
+
+            <div style="margin-bottom: 18px;">
+
+                <label>
+                    Current Stock
+                </label>
+
+                <input
+                    type="number"
+                    name="current_stock"
+                    value="{{ item.current_stock }}"
+                    step="0.01"
+                    min="0"
+                    required
+                    style="
+                        width: 100%;
+                        padding: 10px;
+                        margin-top: 6px;
+                        border: 1px solid #d1d5db;
+                        border-radius: 6px;
+                        box-sizing: border-box;
+                    "
+                >
+
+            </div>
+
+
+            <!-- REORDER LEVEL -->
+
+            <div style="margin-bottom: 18px;">
+
+                <label>
+                    Reorder Level
+                </label>
+
+                <input
+                    type="number"
+                    name="reorder_level"
+                    value="{{ item.reorder_level }}"
+                    step="0.01"
+                    min="0"
+                    required
+                    style="
+                        width: 100%;
+                        padding: 10px;
+                        margin-top: 6px;
+                        border: 1px solid #d1d5db;
+                        border-radius: 6px;
+                        box-sizing: border-box;
+                    "
+                >
+
+            </div>
+
+
+            <!-- BUTTONS -->
+
+            <div style="
+                display: flex;
+                gap: 10px;
+                margin-top: 25px;
+            ">
+
+                <button
+                    type="submit"
+                    style="
+                        background: #2563eb;
+                        color: white;
+                        border: none;
+                        padding: 10px 18px;
+                        border-radius: 6px;
+                        cursor: pointer;
+                    "
+                >
+                    Save Changes
+                </button>
+
+
+                <a
+                    href="/inventory"
+                    style="
+                        background: #e5e7eb;
+                        color: #111827;
+                        padding: 10px 18px;
+                        border-radius: 6px;
+                        text-decoration: none;
+                    "
+                >
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

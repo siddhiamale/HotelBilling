@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+
+{% block title %}
+Best Selling Dishes - Hotel Billing
+{% endblock %}
+
+
+{% block content %}
+
+
+<!-- ==========================================
+     HEADER
+========================================== -->
+
+<div style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+">
+
+
+    <div>
+
+        <h1>
+            Best Selling Dishes
+        </h1>
+
+        <p style="color: #6b7280;">
+
+            See which dishes are selling the most
+
+        </p>
+
+    </div>
+
+
+    <!-- DATE FILTER -->
+
+    <form
+        method="GET"
+        action="/best-selling"
+        style="
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        "
+    >
+
+        <input
+            type="date"
+            name="date"
+            value="{{ report_date.strftime('%Y-%m-%d') }}"
+            style="
+                padding: 10px;
+                border: 1px solid #d1d5db;
+                border-radius: 6px;
+            "
+        >
+
+
+        <button
+            type="submit"
+            style="
+                background: #2563eb;
+                color: white;
+                border: none;
+                padding: 10px 18px;
+                border-radius: 6px;
+                cursor: pointer;
+            "
+        >
+
+            View Report
+
+        </button>
+
+    </form>
+
+</div>
+
+
+
+<!-- ==========================================
+     DATE
+========================================== -->
+
+<div
+    class="card"
+    style="
+        margin-top: 20px;
+        padding: 15px;
+    "
+>
+
+    <strong>
+        Report Date:
+    </strong>
+
+    {{ report_date.strftime('%d-%m-%Y') }}
+
+</div>
+
+
+
+<!-- ==========================================
+     BEST SELLING TABLE
+========================================== -->
+
+<div
+    class="card"
+    style="
+        margin-top: 25px;
+    "
+>
+
+
+    <h2>
+        Dish Sales
+    </h2>
+
+
+    <div style="
+        overflow-x: auto;
+    ">
+
+
+        <table style="
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        ">
+
+
+            <thead>
+
+                <tr style="
+                    text-align: left;
+                    border-bottom:
+                        1px solid #ddd;
+                ">
+
+
+                    <th style="padding: 12px;">
+                        Rank
+                    </th>
+
+
+                    <th style="padding: 12px;">
+                        Dish
+                    </th>
+
+
+                    <th style="padding: 12px;">
+                        Category
+                    </th>
+
+
+                    <th style="padding: 12px;">
+                        Quantity Sold
+                    </th>
+
+
+                    <th style="padding: 12px;">
+                        Revenue
+                    </th>
+
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+
+                {% for dish in best_dishes %}
+
+
+                <tr style="
+                    border-bottom:
+                        1px solid #eee;
+                ">
+
+
+                    <!-- RANK -->
+
+                    <td style="padding: 12px;">
+
+                        {% if loop.index == 1 %}
+
+                            🥇
+
+                        {% elif loop.index == 2 %}
+
+                            🥈
+
+                        {% elif loop.index == 3 %}
+
+                            🥉
+
+                        {% else %}
+
+                            {{ loop.index }}
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- DISH -->
+
+                    <td style="
+                        padding: 12px;
+                        font-weight: bold;
+                    ">
+
+                        {{ dish.name }}
+
+                    </td>
+
+
+                    <!-- CATEGORY -->
+
+                    <td style="padding: 12px;">
+
+                        {{ dish.category }}
+
+                    </td>
+
+
+                    <!-- QUANTITY -->
+
+                    <td style="padding: 12px;">
+
+                        {{ dish.quantity }}
+
+                    </td>
+
+
+                    <!-- REVENUE -->
+
+                    <td style="padding: 12px;">
+
+                        ₹{{ "%.2f"|format(
+                            dish.revenue
+                        ) }}
+
+                    </td>
+
+
+                </tr>
+
+
+                {% else %}
+
+
+                <tr>
+
+                    <td
+                        colspan="5"
+                        style="
+                            padding: 30px;
+                            text-align: center;
+                            color: #6b7280;
+                        "
+                    >
+
+                        No paid orders found
+                        for this date.
+
+                    </td>
+
+                </tr>
+
+
+                {% endfor %}
+
+
+            </tbody>
+
+
+        </table>
+
+    </div>
+
+</div>
+
+
+
+{% endblock %}

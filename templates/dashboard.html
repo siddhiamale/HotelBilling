@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard - Hotel Billing
+{% endblock %}
+
+{% block content %}
+
+<h1>Dashboard</h1>
+
+<p style="color: #6b7280;">
+    Today's hotel overview
+</p>
+
+
+<!-- SUMMARY CARDS -->
+
+<div style="
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    margin-top: 25px;
+">
+
+
+    <!-- ORDERS -->
+
+    <div class="card">
+
+        <p style="color: #6b7280;">
+            Today's Orders
+        </p>
+
+        <h2>
+            {{ total_orders }}
+        </h2>
+
+    </div>
+
+
+    <!-- SALES -->
+
+    <div class="card">
+
+        <p style="color: #6b7280;">
+            Today's Sales
+        </p>
+
+        <h2>
+            ₹{{ "%.2f"|format(total_sales) }}
+        </h2>
+
+    </div>
+
+
+    <!-- PAID -->
+
+    <div class="card">
+
+        <p style="color: #6b7280;">
+            Paid Orders
+        </p>
+
+        <h2>
+            {{ paid_orders }}
+        </h2>
+
+    </div>
+
+
+    <!-- PENDING -->
+
+    <div class="card">
+
+        <p style="color: #6b7280;">
+            Pending Payments
+        </p>
+
+        <h2>
+            {{ pending_orders }}
+        </h2>
+
+        <small>
+            ₹{{ "%.2f"|format(pending_amount) }}
+        </small>
+
+    </div>
+
+
+    <!-- LOW STOCK -->
+
+    <div class="card">
+
+        <p style="color: #6b7280;">
+            Low Stock
+        </p>
+
+        <h2>
+            {{ low_stock_count }}
+        </h2>
+
+        {% if low_stock_count > 0 %}
+
+            <a href="/inventory">
+                View Inventory
+            </a>
+
+        {% else %}
+
+            <small>
+                All stock levels are good
+            </small>
+
+        {% endif %}
+
+    </div>
+
+
+</div>
+
+
+<!-- QUICK ACTIONS -->
+
+<div class="card" style="margin-top: 30px;">
+
+    <h2>
+        Quick Actions
+    </h2>
+
+    <div style="
+        display: flex;
+        gap: 15px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+    ">
+
+        <a
+            href="/orders/new"
+            style="
+                background: #2563eb;
+                color: white;
+                padding: 10px 18px;
+                border-radius: 6px;
+                text-decoration: none;
+            "
+        >
+            + New Order
+        </a>
+
+
+        {% if session.get("role") in ["admin", "manager"] %}
+
+        <a
+            href="/dishes/add"
+            style="
+                background: #16a34a;
+                color: white;
+                padding: 10px 18px;
+                border-radius: 6px;
+                text-decoration: none;
+            "
+        >
+            + Add Dish
+        </a>
+
+
+        <a
+            href="/inventory/add"
+            style="
+                background: #7c3aed;
+                color: white;
+                padding: 10px 18px;
+                border-radius: 6px;
+                text-decoration: none;
+            "
+        >
+            + Add Stock
+        </a>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+{% endblock %}

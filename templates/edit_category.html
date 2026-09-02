@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Category - Hotel Billing
+{% endblock %}
+
+{% block content %}
+
+<h1>Edit Category</h1>
+
+<p style="margin-top: 5px; color: #6b7280;">
+    Update category information
+</p>
+
+<div class="card" style="margin-top: 25px; max-width: 600px;">
+
+    <form method="POST">
+
+        <div style="margin-bottom: 20px;">
+
+            <label>Category Name</label>
+
+            <input
+                type="text"
+                name="name"
+                value="{{ category.name }}"
+                required
+                style="
+                    width: 100%;
+                    padding: 12px;
+                    margin-top: 8px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 6px;
+                "
+            >
+
+        </div>
+
+
+        <div style="margin-bottom: 20px;">
+
+            <label>Description</label>
+
+            <textarea
+                name="description"
+                rows="4"
+                style="
+                    width: 100%;
+                    padding: 12px;
+                    margin-top: 8px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 6px;
+                    resize: vertical;
+                "
+            >{{ category.description or "" }}</textarea>
+
+        </div>
+
+
+        <button
+            type="submit"
+            style="
+                background: #2563eb;
+                color: white;
+                border: none;
+                padding: 11px 20px;
+                border-radius: 6px;
+                cursor: pointer;
+            "
+        >
+            Update Category
+        </button>
+
+
+        <a
+            href="/categories"
+            style="
+                margin-left: 10px;
+                text-decoration: none;
+                color: #374151;
+            "
+        >
+            Cancel
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

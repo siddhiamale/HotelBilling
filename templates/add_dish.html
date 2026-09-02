@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}
+Add Dish - Hotel Billing
+{% endblock %}
+
+{% block content %}
+
+<h1>Add Dish</h1>
+
+<p style="margin-top: 5px; color: #6b7280;">
+    Add a new item to your hotel menu
+</p>
+
+
+<div class="card" style="margin-top: 25px; max-width: 650px;">
+
+    <form method="POST">
+
+        <!-- Dish Name -->
+
+        <div style="margin-bottom: 20px;">
+
+            <label>
+                Dish Name
+            </label>
+
+            <input
+                type="text"
+                name="name"
+                placeholder="Enter dish name"
+                required
+                style="
+                    width: 100%;
+                    padding: 12px;
+                    margin-top: 8px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 6px;
+                "
+            >
+
+        </div>
+
+
+        <!-- Description -->
+
+        <div style="margin-bottom: 20px;">
+
+            <label>
+                Description
+            </label>
+
+            <textarea
+                name="description"
+                placeholder="Enter dish description"
+                rows="4"
+                style="
+                    width: 100%;
+                    padding: 12px;
+                    margin-top: 8px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 6px;
+                    resize: vertical;
+                "
+            ></textarea>
+
+        </div>
+
+
+        <!-- Category -->
+
+        <div style="margin-bottom: 20px;">
+
+            <label>
+                Category
+            </label>
+
+            <select
+                name="category_id"
+                required
+                style="
+                    width: 100%;
+                    padding: 12px;
+                    margin-top: 8px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 6px;
+                    background: white;
+                "
+            >
+
+                <option value="">
+                    Select Category
+                </option>
+
+                {% for category in categories %}
+
+                    <option value="{{ category.id }}">
+                        {{ category.name }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <!-- Price -->
+
+        <div style="margin-bottom: 20px;">
+
+            <label>
+                Price (₹)
+            </label>
+
+            <input
+                type="number"
+                name="price"
+                placeholder="Enter price"
+                min="0"
+                step="0.01"
+                required
+                style="
+                    width: 100%;
+                    padding: 12px;
+                    margin-top: 8px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 6px;
+                "
+            >
+
+        </div>
+
+
+        <!-- Available -->
+
+        <div style="margin-bottom: 20px;">
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    name="available"
+                    checked
+                >
+
+                Available for sale
+
+            </label>
+
+        </div>
+
+
+        <!-- Buttons -->
+
+        <button
+            type="submit"
+            style="
+                background: #2563eb;
+                color: white;
+                border: none;
+                padding: 11px 20px;
+                border-radius: 6px;
+                cursor: pointer;
+            "
+        >
+            Save Dish
+        </button>
+
+
+        <a
+            href="/dishes"
+            style="
+                margin-left: 10px;
+                text-decoration: none;
+                color: #374151;
+            "
+        >
+            Cancel
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}
